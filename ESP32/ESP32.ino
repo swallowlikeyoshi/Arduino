@@ -1,7 +1,9 @@
-#define RED 3
+#define RED 0
 #define GREEN 5
 #define BLUE 6
 #define WHITE 9
+
+#include <math.h>
 
 class Driver
 {
@@ -14,11 +16,7 @@ public:
   Driver(int pin, bool isNtype, int bright)
   {
     this->pin = pin;
-
-    // N채널 모스펫이 몇 개 없어서... P채널 모스펫도 같이 쓰느라...
-    // 근데 밝기 변화가 다른 것을 보면 두 모스펫 특성이 상이한 듯
     this->isNMos = isNtype;
-
     this->bright = bright;
     setBrightness(bright);
   }
@@ -26,13 +24,13 @@ public:
   void setBrightness(int bright)
   {
     this->bright = min(255, max(0, isNMos ? bright : (255 - bright)));
-    analogWrite(pin, this->bright);
+    ledcWrite(0, this->bright);
   }
 };
 
-Driver drivers[4] = {Driver(RED, true, 0), Driver(GREEN, false, 0), Driver(BLUE, false, 0), Driver(WHITE, true, 0)};
+Driver drivers[4] = { Driver(RED, true, 0), Driver(GREEN, false, 0), Driver(BLUE, false, 0), Driver(WHITE, true, 0) };
 const double GAMMA = 2.2;
-int bright = 0;
+double bright = 0;
 
 int gammaAdjust(double bright)
 {
@@ -42,29 +40,31 @@ int gammaAdjust(double bright)
 void setup()
 {
   pinMode(RED, OUTPUT);
-  pinMode(GREEN, OUTPUT);
-  pinMode(BLUE, OUTPUT);
-  pinMode(WHITE, OUTPUT);
+  // pinMode(GREEN, OUTPUT);
+  // pinMode(BLUE, OUTPUT);
+  // pinMode(WHITE, OUTPUT);
+  ledcSetup(0, 20000, 8);
+  ledcAttachPin(0, 0);   
   Serial.begin(115200);
 }
 
 void loop()
 {
-  if (bright > 255)
+  if (bright > 1)
   {
     bright = 0;
   }
 
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 1; i++)
   {
-    drivers[i].setBrightness(gammaAdjust(bright));
+    drivers[i].setBrightness(gammaAdjust(255 * sin(bright * PI)));
     // 비선형적 증감
 
     // driver[i].setBrightness(bright);
     // 선형적 증감
   }
 
-  bright++;
+  bright += 0.01;
 
-  delay(10);
+  delay(1);
 }

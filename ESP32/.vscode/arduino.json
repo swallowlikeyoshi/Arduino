@@ -1,0 +1,8 @@
+{
+    "sketch": "ESP32.ino",
+    "output": "build",
+    "configuration": "PSRAM=disabled,PartitionScheme=default,FlashFreq=80,UploadSpeed=115200,DebugLevel=none,EraseFlash=none",
+    "board": "esp32:esp32:d32_pro",
+    "port": "COM4",
+    "programmer": "esptool"
+}

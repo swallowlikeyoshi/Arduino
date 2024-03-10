@@ -1,0 +1,8 @@
+{
+    "sketch": "IR.ino",
+    "output": "build",
+    "configuration": "cpu=atmega328old",
+    "board": "arduino:avr:nano",
+    "port": "COM4",
+    "programmer": "avrisp"
+}
